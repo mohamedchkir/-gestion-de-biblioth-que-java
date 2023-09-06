@@ -109,25 +109,6 @@ public class Book {
         this.lost = lost;
     }
 
-    public List<Book> showBook(){
-        return null;
-    }
-    public void addBook(){
-
-    }
-
-    public void editeBook(){
-
-    }
-
-    public void updateBook(){
-
-    }
-
-    public void deleteBook(){
-
-    }
-
     public Book searchBook(){
         return null;
     }

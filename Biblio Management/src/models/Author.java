@@ -8,6 +8,9 @@ public class Author {
         this.id = id;
         this.name = name;
     }
+    public Author(int id) {
+        this.id = id;
+    }
 
     public int getId() {
         return id;
