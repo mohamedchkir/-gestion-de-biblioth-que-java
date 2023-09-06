@@ -53,6 +53,9 @@ public class Book {
         this.borrow = borrow;
         this.lost = lost;
     }
+    public Book(int id){
+        this.id = id;
+    }
 
 
     public int getId() {

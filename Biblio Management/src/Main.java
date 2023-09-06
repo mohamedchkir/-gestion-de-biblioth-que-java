@@ -19,7 +19,7 @@ public class Main {
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     static Scanner sc =new Scanner(System.in);
-        public static void main(String[]args) throws IOException {
+        public static void main(String[]args) throws IOException, SQLException {
             Scanner scanner = new Scanner(System.in);
 
             while (true) {
@@ -112,8 +112,7 @@ public class Main {
     private static void reserveBook() {
     }
 
-    private static void deleteBook() {
-    }
+
 
     private static void updateBook() {
         System.out.println("------------------------------------------------");
@@ -166,7 +165,7 @@ public class Main {
 
         var dao = new BookDAO();
 
-        int status = dao.updateBook(book , id)3;
+        int status = dao.updateBook(book , id);
         if(status ==1 )
         {
             System.out.println("Book updated successfully");
@@ -265,6 +264,23 @@ public class Main {
         System.out.println("Book Available: "+book.getAvailable());
         System.out.println("Book Borrowed: "+book.getBorrow());
         System.out.println("Book Lost: "+book.getLost());
+        System.out.println("\n");
+    }
+    public  static void deleteBook() throws SQLException {
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book Id:");
+        System.out.println("------------------------------------------------");
+        int bookId = sc.nextInt();
+        Book book = new Book(bookId);
+        int status =dao.BookDAO.deleteBook(bookId);
+        if(status == 1 )
+        {
+            System.out.println("Book deleted successfully");
+        }
+        else
+        {
+            System.out.println("Something went wrong");
+        }
         System.out.println("\n");
     }
 }

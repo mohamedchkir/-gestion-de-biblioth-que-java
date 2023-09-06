@@ -74,7 +74,7 @@ public class BookDAO {
         return succes;
     }
 
-    public int deleteBook(int id)
+    public static int deleteBook(int id)
     {
         int status = 0;
         try
