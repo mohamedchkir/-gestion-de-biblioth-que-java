@@ -116,6 +116,67 @@ public class Main {
     }
 
     private static void updateBook() {
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book ID:");
+        System.out.println("------------------------------------------------");
+        int id = sc.nextInt();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book Title:");
+        String title = sc.nextLine();
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book Category:");
+        System.out.println("------------------------------------------------");
+        String category = sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book edition:");
+        System.out.println("------------------------------------------------");
+        String edition = sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book author id:");
+        System.out.println("------------------------------------------------");
+        int author = sc.nextInt();
+        sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book Isbn:");
+        System.out.println("------------------------------------------------");
+        String isbn = sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book available:");
+        System.out.println("------------------------------------------------");
+        int available = sc.nextInt();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book borrowed:");
+        System.out.println("------------------------------------------------");
+        int borrowed = sc.nextInt();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book lost:");
+        System.out.println("------------------------------------------------");
+        int lost = sc.nextInt();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book quantity:");
+        System.out.println("------------------------------------------------");
+        int quantity = sc.nextInt();
+
+        //after user enters values, store them in a Book variable
+        Book book = new Book(id,title, category,edition, author,isbn,quantity,available,borrowed,lost);
+
+        var dao = new BookDAO();
+
+        int status = dao.updateBook(book , id)3;
+        if(status ==1 )
+        {
+            System.out.println("Book updated successfully");
+        }
+        else
+        {
+            System.out.println("ERROR while updating Book");
+        }
+        System.out.println("\n");
+
     }
 
     private static void addBook() throws IOException {

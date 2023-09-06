@@ -93,4 +93,32 @@ public class BookDAO {
         return status;
     }
 
+    public int updateBook(Book book ,int id) {
+        int success = 0;
+
+        try {
+            Connection conn = DBC.getConnection();
+            PreparedStatement ps = conn.prepareStatement("UPDATE book SET title=?, author_id=?, edition=?, isbn=?, quantity=?, category=?, available=?, borrowed=?, lost=? WHERE id=?");
+
+            ps.setString(1, book.getTitle());
+            ps.setInt(2, book.getAuthor().getId());
+            ps.setString(3, book.getEdition());
+            ps.setString(4, book.getIsbn());
+            ps.setInt(5, book.getQuantity());
+            ps.setString(6, book.getCategory());
+            ps.setInt(7, book.getAvailable());
+            ps.setInt(8, book.getBorrow());
+            ps.setInt(9, book.getLost());
+            ps.setInt(10, book.getId()); // Assuming 'id' is the primary key of the book
+
+            success = ps.executeUpdate();
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return success;
+    }
+
+
 }
