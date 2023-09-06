@@ -29,6 +29,19 @@ public class Book {
         this.lost = lost;
     }
 
+    public Book(String title, String category, String edition, int author, String isbn, int quantity,int available,int borrow ,int lost) {
+        this.title = title;
+        this.category = category;
+        this.edition = edition;
+        this.isbn = isbn;
+        this.author = new Author(author);
+        this.quantity = quantity;
+        this.available = available;
+        this.borrow = borrow;
+        this.lost = lost;
+    }
+
+
     public int getId() {
         return id;
     }

@@ -48,23 +48,22 @@ public class BookDAO {
         return bookList;
     }
 
-    public int addBook( Book book){
+    public int addBook( Book book ,int author_id){
         int succes = 0;
 
         try {
             Connection conn= DBC.getConnection();
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO book VALUES(?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO book(`title`,`author_id`,`edition`,`isbn`,`quantity`,`category`,`available`,`borrowed`,`lost`) VALUES(?,?,?,?,?,?,?,?,?)");
 
-            ps.setInt(1,book.getId());
-            ps.setString(2,book.getTitle());
-            ps.setString(4,book.getCategory());
-            ps.setString(5,book.getEdition());
-            ps.setString(3,book.getIsbn());
-            ps.setInt(6,book.getAuthor().getId());
-            ps.setInt(7,book.getQuantity());
-            ps.setInt(8,book.getAvailable());
-            ps.setInt(9,book.getBorrow());
-            ps.setInt(10,book.getLost());
+            ps.setString(1,book.getTitle());
+            ps.setInt(2,author_id);
+            ps.setString(3,book.getEdition());
+            ps.setString(4,book.getIsbn());
+            ps.setInt(5,book.getQuantity());
+            ps.setString(6,book.getCategory());
+            ps.setInt(7,book.getAvailable());
+            ps.setInt(8,book.getBorrow());
+            ps.setInt(9,book.getLost());
 
             succes = ps.executeUpdate();
 

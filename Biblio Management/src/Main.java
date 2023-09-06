@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -5,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import dao.BookDAO;
+import models.Author;
 import models.Book;
 
 
@@ -12,7 +16,10 @@ import models.Book;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
 
-        public static void main(String[]args){
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    static Scanner sc =new Scanner(System.in);
+        public static void main(String[]args) throws IOException {
             Scanner scanner = new Scanner(System.in);
 
             while (true) {
@@ -111,23 +118,81 @@ public class Main {
     private static void updateBook() {
     }
 
-    private static void addBook() {
+    private static void addBook() throws IOException {
+
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book Title:");
+        String title = sc.nextLine();
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book Category:");
+        System.out.println("------------------------------------------------");
+        String category = sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book edition:");
+        System.out.println("------------------------------------------------");
+        String edition = sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book author id:");
+        System.out.println("------------------------------------------------");
+        int author = sc.nextInt();
+        sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book Isbn:");
+        System.out.println("------------------------------------------------");
+        String isbn = sc.nextLine();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book quantity:");
+        System.out.println("------------------------------------------------");
+        int available = sc.nextInt();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book quantity:");
+        System.out.println("------------------------------------------------");
+        int borrowed = sc.nextInt();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book quantity:");
+        System.out.println("------------------------------------------------");
+        int lost = sc.nextInt();
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book quantity:");
+        System.out.println("------------------------------------------------");
+        int quantity = sc.nextInt();
+
+        //after user enters values, store them in a Book variable
+        Book book = new Book(title, category,edition, author,isbn,quantity,available,borrowed,lost);
+
+        var dao = new BookDAO();
+
+        int status = dao.addBook(book ,author);
+        if(status ==1 )
+        {
+            System.out.println("Book added successfully");
+        }
+        else
+        {
+            System.out.println("ERROR while adding Book");
+        }
+        System.out.println("\n");
     }
 
     private static void showBook()  {
         System.out.println("-----------------------------------------------");
-        
+
         List<Book> bookList;
         var dao = new BookDAO();
         bookList = dao.showBook();
         for(Book book: bookList)
         {
-            displayProduct(book);
+            displayBook(book);
         }
         System.out.println("-----------------------------------------------");
         System.out.println("\n");
     }
-    public static void displayProduct(Book book)
+    public static void displayBook(Book book)
     {
         System.out.println("Book ID: "+book.getId());
         System.out.println("Book Name: "+book.getTitle());
