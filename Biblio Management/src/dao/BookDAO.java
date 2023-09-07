@@ -6,7 +6,6 @@ import java.util.List;
 
 import models.Author;
 import models.Book;
-import models.Author;
 import dbutil.DBC;
 
 public class BookDAO {
@@ -18,7 +17,7 @@ public class BookDAO {
         try {
             Connection conn = DBC.getConnection();
             Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM book");
+            ResultSet rs = st.executeQuery("SELECT b.*, a.name AS name FROM book b JOIN auteur a ON b.author_id = a.id");
 
             while(rs.next()){
 
@@ -31,12 +30,12 @@ public class BookDAO {
                         int available = rs.getInt("available");
                         int borrow = rs.getInt("borrowed");
                         int lost = rs.getInt("lost");
-
                         int author_id = rs.getInt("author_id");
+                        String author_name = rs.getString("name");
 
-                        Author author = new Author(author_id);
 
-                        Book book =new Book(id, title, category, edition, isbn, author, quantity, available, borrow, lost);
+
+                        Book book =new Book(id, title, category, edition, isbn, author_id,author_name, quantity, available, borrow, lost);
                         bookList.add(book);
 
             }
@@ -74,23 +73,22 @@ public class BookDAO {
         return succes;
     }
 
-    public static int deleteBook(int id)
-    {
-        int status = 0;
+    public static int deleteBook(int id) {
+        int success = 0;
         try
         {
             Connection conn = DBC.getConnection();
             PreparedStatement ps = conn.prepareStatement("DELETE FROM book where id = ?");
-            //set parameters of query here but using the values for the product object
+
             ps.setInt(1, id);
-            status = ps.executeUpdate();  //if successful status should return 1
+            success = ps.executeUpdate();
 
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
-        return status;
+        return success;
     }
 
     public int updateBook(Book book ,int id) {
@@ -119,6 +117,8 @@ public class BookDAO {
 
         return success;
     }
+
+    
 
 
 }

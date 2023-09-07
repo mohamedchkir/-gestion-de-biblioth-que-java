@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
+import dao.AuthorDAO;
 import dao.BookDAO;
 import models.Author;
 import models.Book;
@@ -188,46 +189,92 @@ public class Main {
             title = sc.nextLine();
         }
         System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
         System.out.println("Enter Book Category:");
         System.out.println("------------------------------------------------");
         String category = sc.nextLine();
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book edition:");
         System.out.println("------------------------------------------------");
         String edition = sc.nextLine();
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book author id:");
         System.out.println("------------------------------------------------");
-        int author = sc.nextInt();
-        sc.nextLine();
+
+        String authorName = sc.nextLine();
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+
+        var dao = new AuthorDAO();
+
+        int authorId = dao.fetchAuthorId(authorName);
+
+        if (authorId == 0) {
+            System.out.println("Author not found.");
+        }
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book Isbn:");
         System.out.println("------------------------------------------------");
         String isbn = sc.nextLine();
+
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book quantity:");
         System.out.println("------------------------------------------------");
         int available = sc.nextInt();
+
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book quantity:");
         System.out.println("------------------------------------------------");
         int borrowed = sc.nextInt();
+
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+
+
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book quantity:");
         System.out.println("------------------------------------------------");
         int lost = sc.nextInt();
+        while (title.isEmpty()) {
+            System.out.println("Title cannot be empty. Please enter a valid title:");
+            title = sc.nextLine();
+        }
+
+
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book quantity:");
         System.out.println("------------------------------------------------");
         int quantity = sc.nextInt();
 
         //after user enters values, store them in a Book variable
-        Book book = new Book(title, category,edition, author,isbn,quantity,available,borrowed,lost);
+        Book book = new Book(title, category,edition, authorId,isbn,quantity,available,borrowed,lost);
 
-        var dao = new BookDAO();
+        var daob = new BookDAO();
 
-        int status = dao.addBook(book ,author);
+        int status = daob.addBook(book ,authorId);
         if(status ==1 )
         {
             System.out.println("Book added successfully");
@@ -252,35 +299,44 @@ public class Main {
         System.out.println("-----------------------------------------------");
         System.out.println("\n");
     }
-    public static void displayBook(Book book)
-    {
+    public static void displayBook(Book book) {
         System.out.println("Book ID: "+book.getId());
         System.out.println("Book Name: "+book.getTitle());
         System.out.println("Book Isbn: "+book.getIsbn());
         System.out.println("Book Category: "+book.getCategory());
         System.out.println("Book Edition: "+book.getEdition());
-        System.out.println("Book Author: "+book.getAuthor().getId());
+        System.out.println("Book Author: "+book.getAuthor().getName());
         System.out.println("Book Quantity: "+book.getQuantity());
         System.out.println("Book Available: "+book.getAvailable());
         System.out.println("Book Borrowed: "+book.getBorrow());
         System.out.println("Book Lost: "+book.getLost());
         System.out.println("\n");
     }
-    public  static void deleteBook() throws SQLException {
+    public static void deleteBook() {
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book Id:");
         System.out.println("------------------------------------------------");
         int bookId = sc.nextInt();
-        Book book = new Book(bookId);
-        int status =dao.BookDAO.deleteBook(bookId);
-        if(status == 1 )
-        {
-            System.out.println("Book deleted successfully");
+
+        System.out.println("Are you sure you want to delete this book?");
+        System.out.println("1. Yes");
+        System.out.println("2. No");
+        int confirmation = sc.nextInt();
+
+        if (confirmation == 1) {
+            int status = dao.BookDAO.deleteBook(bookId);
+            if (status == 1) {
+                System.out.println("Book deleted successfully");
+            } else {
+                System.out.println("Something went wrong");
+            }
+        } else if (confirmation == 2) {
+            System.out.println("Deletion canceled.");
+        } else {
+            System.out.println("Invalid choice. Deletion canceled.");
         }
-        else
-        {
-            System.out.println("Something went wrong");
-        }
+
         System.out.println("\n");
     }
+
 }
