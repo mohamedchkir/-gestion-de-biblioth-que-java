@@ -99,7 +99,55 @@ public class Main {
     }
 
     private static void searchBook() {
+        System.out.println("------------------------------------------------");
+        System.out.println("Search by:");
+        System.out.println("1. Book Title");
+        System.out.println("2. Author Name");
+        System.out.println("------------------------------------------------");
+        int searchOption = sc.nextInt();
+        sc.nextLine(); // Consume the newline character left by nextInt()
+
+        if (searchOption == 1) {
+            System.out.println("Enter Book Title:");
+            String title = sc.nextLine();
+            searchBooksByTitle(title);
+        } else if (searchOption == 2) {
+            System.out.println("Enter Author Name:");
+            String authorName = sc.nextLine();
+            searchBooksByAuthor(authorName);
+        } else {
+            System.out.println("Invalid choice.");
+        }
     }
+
+    private static void searchBooksByTitle(String title) {
+        var dao = new BookDAO();
+        List<Book> books = dao.searchBooksByTitle(title);
+
+        if (books.isEmpty()) {
+            System.out.println("No books found with the given title.");
+        } else {
+            System.out.println("Books found with the title '" + title + "':");
+            for (Book book : books) {
+                displayBook(book);
+            }
+        }
+    }
+
+    private static void searchBooksByAuthor(String authorName) {
+        var dao = new BookDAO();
+        List<Book> books = dao.searchBooksByAuthor(authorName);
+
+        if (books.isEmpty()) {
+            System.out.println("No books found by the author '" + authorName + "'.");
+        } else {
+            System.out.println("Books found by the author '" + authorName + "':");
+            for (Book book : books) {
+                displayBook(book);
+            }
+        }
+    }
+
 
     private static void borrowBook() {
     }

@@ -118,7 +118,72 @@ public class BookDAO {
         return success;
     }
 
-    
+    public List<Book> searchBooksByTitle(String title) {
+        List<Book> matchingBooks = new ArrayList<>();
+
+        try {
+            Connection conn = DBC.getConnection();
+            PreparedStatement ps = conn.prepareStatement("SELECT b.*, a.name AS name FROM book b JOIN auteur a ON b.author_id = a.id WHERE UPPER(b.title) LIKE UPPER(?)");
+            ps.setString(1, title );
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String isbn = rs.getString("isbn");
+                String category = rs.getString("category");
+                String edition = rs.getString("edition");
+                int quantity = rs.getInt("quantity");
+                int available = rs.getInt("available");
+                int borrow = rs.getInt("borrowed");
+                int lost = rs.getInt("lost");
+                int author_id = rs.getInt("author_id");
+                String author_name = rs.getString("name");
+                Book book = new Book(id, title, category, edition, isbn, author_id, author_name, quantity, available, borrow, lost);
+                matchingBooks.add(book);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return matchingBooks;
+    }
+
+
+    public List<Book> searchBooksByAuthor(String authorName) {
+        List<Book> matchingBooks = new ArrayList<>();
+
+        try {
+            Connection conn = DBC.getConnection();
+            PreparedStatement ps = conn.prepareStatement("SELECT b.*, a.name AS name FROM book b JOIN auteur a ON b.author_id = a.id WHERE UPPER (a.name) LIKE UPPER(?)");
+            ps.setString(1, authorName );
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id");
+                String title =rs.getString("title");
+                String isbn = rs.getString("isbn");
+                String category = rs.getString("category");
+                String edition = rs.getString("edition");
+                int quantity = rs.getInt("quantity");
+                int available = rs.getInt("available");
+                int borrow = rs.getInt("borrowed");
+                int lost = rs.getInt("lost");
+                int author_id = rs.getInt("author_id");
+
+                Book book = new Book(id, title, category, edition, isbn, author_id, authorName, quantity, available, borrow, lost);
+                matchingBooks.add(book);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return matchingBooks;
+    }
 
 
 }
