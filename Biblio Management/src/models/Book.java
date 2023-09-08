@@ -29,16 +29,13 @@ public class Book {
         this.lost = lost;
     }
 
-    public Book(String title, String category, String edition, int author, String isbn, int quantity,int available,int borrow ,int lost) {
+    public Book(String title, String category, String edition, int author, String isbn, int quantity) {
         this.title = title;
         this.category = category;
         this.edition = edition;
         this.isbn = isbn;
         this.author = new Author(author);
         this.quantity = quantity;
-        this.available = available;
-        this.borrow = borrow;
-        this.lost = lost;
     }
 
     public Book(int id, String title, String category, String edition, int author, String isbn, int quantity, int available, int borrow, int lost) {

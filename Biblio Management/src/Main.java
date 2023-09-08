@@ -4,13 +4,15 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import dao.AuthorDAO;
 import dao.BookDAO;
+import dao.BorrowDAO;
 import models.Author;
 import models.Book;
+
+import java.text.SimpleDateFormat;
 
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
@@ -156,10 +158,56 @@ public class Main {
     }
 
     private static void returnBook() {
+
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Client CIN:");
+        System.out.println("------------------------------------------------");
+        int clientId = sc.nextInt();
+        sc.nextLine();
+
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book ISBN:");
+        System.out.println("------------------------------------------------");
+        String bookIsbn = sc.nextLine();
+
+        BorrowDAO dao = new BorrowDAO();
+        String returnedBookTitle = dao.returnReservedBook(clientId, bookIsbn);
+
+        if (returnedBookTitle != null) {
+            dao.updateReturn(bookIsbn);
+        } else {
+            System.out.println("No reservation found for the given client ID and book ISBN.");
+        }
+
+        sc.close();
     }
 
+
+
     private static void reserveBook() {
+
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Client ID:");
+        System.out.println("------------------------------------------------");
+        int clientId = sc.nextInt();
+        sc.nextLine();
+
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book ISBN:");
+        System.out.println("------------------------------------------------");
+        String bookIsbn = sc.nextLine();
+
+
+        BorrowDAO dao = new BorrowDAO();
+        int result = dao.borrowBook(clientId, bookIsbn);
+
+        if (result == 1) {
+            dao.updateReserve(bookIsbn);
+        } else {
+            System.out.println("Please check the client ID and book ISBN.");
+        }
     }
+
 
 
 
@@ -240,28 +288,28 @@ public class Main {
         System.out.println("Enter Book Category:");
         System.out.println("------------------------------------------------");
         String category = sc.nextLine();
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
+        while (category.isEmpty()) {
+            System.out.println("Category cannot be empty. Please enter a valid title:");
+            category = sc.nextLine();
         }
 
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book edition:");
         System.out.println("------------------------------------------------");
         String edition = sc.nextLine();
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
+        while (edition.isEmpty()) {
+            System.out.println("edition cannot be empty. Please enter a valid title:");
+            edition = sc.nextLine();
         }
 
         System.out.println("------------------------------------------------");
-        System.out.println("Enter Book author id:");
+        System.out.println("Enter Book author name:");
         System.out.println("------------------------------------------------");
 
         String authorName = sc.nextLine();
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
+        while (authorName.isEmpty()) {
+            System.out.println(" Author name cannot be empty. Please enter a valid title:");
+            authorName = sc.nextLine();
         }
 
         var dao = new AuthorDAO();
@@ -276,49 +324,25 @@ public class Main {
         System.out.println("------------------------------------------------");
         String isbn = sc.nextLine();
 
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
-        }
-
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book quantity:");
-        System.out.println("------------------------------------------------");
-        int available = sc.nextInt();
-
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
-        }
-
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book quantity:");
-        System.out.println("------------------------------------------------");
-        int borrowed = sc.nextInt();
-
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
+        while (isbn.isEmpty()) {
+            System.out.println("Isbn cannot be empty. Please enter a valid Isbn:");
+            isbn = sc.nextLine();
         }
 
 
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book quantity:");
         System.out.println("------------------------------------------------");
-        int lost = sc.nextInt();
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
+        String input = sc.nextLine();
+
+        while (input.isEmpty()) {
+            System.out.println("Quantity cannot be empty. Please enter a valid quantity:");
+            input = sc.nextLine();
         }
 
+        int quantity = Integer.parseInt(input);
 
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book quantity:");
-        System.out.println("------------------------------------------------");
-        int quantity = sc.nextInt();
-
-        //after user enters values, store them in a Book variable
-        Book book = new Book(title, category,edition, authorId,isbn,quantity,available,borrowed,lost);
+        Book book = new Book(title, category,edition, authorId,isbn,quantity);
 
         var daob = new BookDAO();
 

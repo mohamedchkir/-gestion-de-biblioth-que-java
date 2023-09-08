@@ -60,9 +60,9 @@ public class BookDAO {
             ps.setString(4,book.getIsbn());
             ps.setInt(5,book.getQuantity());
             ps.setString(6,book.getCategory());
-            ps.setInt(7,book.getAvailable());
-            ps.setInt(8,book.getBorrow());
-            ps.setInt(9,book.getLost());
+            ps.setInt(7,book.getQuantity());
+            ps.setInt(8,0);
+            ps.setInt(9,0);
 
             succes = ps.executeUpdate();
 
@@ -184,6 +184,8 @@ public class BookDAO {
 
         return matchingBooks;
     }
+
+
 
 
 }
