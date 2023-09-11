@@ -124,7 +124,7 @@ public class BookDAO {
         try {
             Connection conn = DBC.getConnection();
             PreparedStatement ps = conn.prepareStatement("SELECT b.*, a.name AS name FROM book b JOIN auteur a ON b.author_id = a.id WHERE UPPER(b.title) LIKE UPPER(?)");
-            ps.setString(1, title );
+            ps.setString(1, "%" + title + "%" );
 
             ResultSet rs = ps.executeQuery();
 
@@ -157,7 +157,7 @@ public class BookDAO {
         try {
             Connection conn = DBC.getConnection();
             PreparedStatement ps = conn.prepareStatement("SELECT b.*, a.name AS name FROM book b JOIN auteur a ON b.author_id = a.id WHERE UPPER (a.name) LIKE UPPER(?)");
-            ps.setString(1, authorName );
+            ps.setString(1, "%" + authorName + "%"  );
 
             ResultSet rs = ps.executeQuery();
 

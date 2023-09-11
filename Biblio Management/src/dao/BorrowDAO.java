@@ -16,7 +16,7 @@ public class BorrowDAO{
         try {
             Connection conn = DBC.getConnection();
 
-            // Check if the reservation already exists for the same client and book
+
             String checkSql = "SELECT COUNT(*) FROM reservation WHERE client_id = ? AND book_isbn = ?";
             PreparedStatement checkPs = conn.prepareStatement(checkSql);
             checkPs.setInt(1, clientId);
