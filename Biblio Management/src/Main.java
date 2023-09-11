@@ -7,6 +7,7 @@ import java.util.*;
 import dao.AuthorDAO;
 import dao.BookDAO;
 import dao.BorrowDAO;
+import dao.ClientDAO;
 import models.Book;
 
 
@@ -120,6 +121,18 @@ public class Main {
 
 
     private static void showStatistics() {
+
+            BookDAO dao = new BookDAO();
+        int totalAvailableBooks = dao.getTotalAvailableBooks();
+        int totalBorrowedBooks = dao.getTotalBorrowedBooks();
+        int totalLostBooks = dao.getTotalLostBooks();
+
+
+        System.out.println(centerText("Total Available Books: " + totalAvailableBooks));
+        System.out.println(centerText("Total Borrowed Books: " + totalBorrowedBooks));
+        System.out.println(centerText("Total Lost Books: "+ totalLostBooks));
+
+
     }
 
     private static void searchBook() {
@@ -207,11 +220,11 @@ public class Main {
 
 
     private static void reserveBook() {
+        System.out.println("------------------------------------------------");
+        System.out.println("Enter Client CIN:");
+        System.out.println("------------------------------------------------");
+        String clientCin = sc.nextLine();
 
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Client ID:");
-        System.out.println("------------------------------------------------");
-        int clientId = sc.nextInt();
         sc.nextLine();
 
         System.out.println("------------------------------------------------");
@@ -219,6 +232,30 @@ public class Main {
         System.out.println("------------------------------------------------");
         String bookIsbn = sc.nextLine();
 
+        ClientDAO C_dao = new ClientDAO();
+
+        int clientId = C_dao.getClientIdByCIN(clientCin);
+
+        if (clientId == -1) {
+
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Client Name:");
+            System.out.println("------------------------------------------------");
+            String clientName = sc.nextLine();
+
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Client phone:");
+            System.out.println("------------------------------------------------");
+            String clientPhone = sc.nextLine();
+
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Client email:");
+            System.out.println("------------------------------------------------");
+            String clientEmail = sc.nextLine();
+
+
+            clientId = ClientDAO.createClient(clientCin,clientName,clientPhone,clientEmail);
+        }
 
         BorrowDAO dao = new BorrowDAO();
         int result = dao.borrowBook(clientId, bookIsbn);
@@ -226,7 +263,7 @@ public class Main {
         if (result == 1) {
             dao.updateReserve(bookIsbn);
         } else {
-            System.out.println("Please check the client ID and book ISBN.");
+            System.out.println("Please check the client CIN and book ISBN.");
         }
     }
 
@@ -234,6 +271,8 @@ public class Main {
 
 
     private static void updateBook() {
+        System.out.println("\n");
+        System.out.println("\n");
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book ID:");
         System.out.println("------------------------------------------------");
@@ -299,6 +338,9 @@ public class Main {
 
     private static void addBook()  {
 
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println("\n");
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book Title:");
         String title = sc.nextLine();

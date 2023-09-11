@@ -186,6 +186,67 @@ public class BookDAO {
     }
 
 
+    // Statistiques:
+    public int getTotalAvailableBooks() {
+        int totalAvailableBooks = 0;
+
+        try (Connection conn = DBC.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT SUM(available) FROM `book`")) {
+
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                totalAvailableBooks = resultSet.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return totalAvailableBooks;
+    }
+
+    public int getTotalBorrowedBooks() {
+        int totalBorrowedBooks = 0;
+
+        try (Connection conn = DBC.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT SUM(borrowed) FROM `book`")) {
+
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                totalBorrowedBooks = resultSet.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return totalBorrowedBooks;
+    }
+
+    public int getTotalLostBooks() {
+        int totalLostBooks = 0;
+
+        try (
+             Connection conn = DBC.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT SUM(lost) FROM `book`")) {
+
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                totalLostBooks = resultSet.getInt(1);
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return totalLostBooks;
+    }
+
+    
+
+
+
 
 
 }
