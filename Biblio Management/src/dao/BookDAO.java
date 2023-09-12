@@ -186,7 +186,7 @@ public class BookDAO {
     }
 
 
-    // Statistiques:
+
     public int getTotalAvailableBooks() {
         int totalAvailableBooks = 0;
 
@@ -243,7 +243,25 @@ public class BookDAO {
         return totalLostBooks;
     }
 
-    
+    public int getTotalReservations(){
+        int TotalReservations = 0;
+
+        try(
+                Connection conn =DBC.getConnection();
+                PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM reservation")){
+
+            ResultSet res = ps.executeQuery();
+
+            if (res.next()){
+                TotalReservations =res.getInt(1);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return TotalReservations;
+
+    }
 
 
 

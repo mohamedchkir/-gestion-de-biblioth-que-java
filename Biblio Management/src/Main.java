@@ -115,22 +115,23 @@ public class Main {
 
 
 
-
-
-
-
-
     private static void showStatistics() {
 
-            BookDAO dao = new BookDAO();
+        BookDAO dao = new BookDAO();
         int totalAvailableBooks = dao.getTotalAvailableBooks();
         int totalBorrowedBooks = dao.getTotalBorrowedBooks();
         int totalLostBooks = dao.getTotalLostBooks();
+        int totalReservations = dao.getTotalReservations();
 
 
+        System.out.println(centerText("\n"));
+        System.out.println(centerText("\n"));
+        System.out.println(centerText("-----------------------------------------------"));
         System.out.println(centerText("Total Available Books: " + totalAvailableBooks));
         System.out.println(centerText("Total Borrowed Books: " + totalBorrowedBooks));
         System.out.println(centerText("Total Lost Books: "+ totalLostBooks));
+        System.out.println(centerText("Total Reservations: "+ totalReservations));
+        System.out.println(centerText("-----------------------------------------------"));
 
 
     }
@@ -187,9 +188,43 @@ public class Main {
 
 
     private static void borrowBook() {
+
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println(centerText("-------------------------------------") );
+        System.out.println(centerText("|  Book Name  |   ISBN   | Borrowed |"));
+        System.out.println(centerText("-------------------------------------") );
+
+
+        List<Book> bookList;
+        var dao = new BookDAO();
+        bookList = dao.showBook();
+
+        for (Book book : bookList) {
+            displayBorrowedBook(book);
+        }
+        System.out.println(centerText("-------------------------------------") );
+        System.out.println("\n");
     }
 
     private static void availableBook() {
+
+        System.out.println("\n");
+        System.out.println("\n");
+        System.out.println(centerText("-------------------------------------") );
+        System.out.println(centerText("|  Book Name  |   ISBN   | Available |"));
+        System.out.println(centerText("-------------------------------------") );
+
+
+        List<Book> bookList;
+        var dao = new BookDAO();
+        bookList = dao.showBook();
+
+        for (Book book : bookList) {
+            displayAvailableBook(book);
+        }
+        System.out.println(centerText("-------------------------------------") );
+        System.out.println("\n");
     }
 
     private static void returnBook() {
@@ -448,6 +483,19 @@ public class Main {
                 book.getId(), book.getTitle(), book.getIsbn(), book.getCategory(),
                 book.getEdition(), book.getAuthor().getName(), book.getQuantity(),
                 book.getAvailable(), book.getBorrow(), book.getLost());
+        System.out.println(centerText(formattedString));
+    }
+    public static void displayAvailableBook(Book book) {
+        String formattedString = String.format("| %-12s| %-10s| %-9s|",
+                 book.getTitle(), book.getIsbn(),
+                book.getAvailable());
+        System.out.println(centerText(formattedString));
+    }
+
+    public static void displayBorrowedBook(Book book) {
+        String formattedString = String.format("| %-12s| %-10s| %-9s|",
+                 book.getTitle(), book.getIsbn(),
+                book.getBorrow());
         System.out.println(centerText(formattedString));
     }
 
