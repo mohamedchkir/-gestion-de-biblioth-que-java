@@ -67,6 +67,10 @@ public class Book {
         this.lost = lost;
     }
 
+    public Book() {
+
+    }
+
 
     public int getId() {
         return id;

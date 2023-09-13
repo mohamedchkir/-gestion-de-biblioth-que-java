@@ -8,6 +8,7 @@ import dao.AuthorDAO;
 import dao.BookDAO;
 import dao.BorrowDAO;
 import dao.ClientDAO;
+import models.Author;
 import models.Book;
 
 
@@ -260,48 +261,50 @@ public class Main {
         System.out.println("------------------------------------------------");
         String clientCin = sc.nextLine();
 
-        sc.nextLine();
-
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book ISBN:");
         System.out.println("------------------------------------------------");
         String bookIsbn = sc.nextLine();
 
-        ClientDAO C_dao = new ClientDAO();
+        // Check if the book exists
+        BookDAO B_dao = new BookDAO();
+        if (B_dao.isBookExistsByISBN(bookIsbn)) {
+            ClientDAO C_dao = new ClientDAO();
+            int clientId = C_dao.getClientIdByCIN(clientCin);
 
-        int clientId = C_dao.getClientIdByCIN(clientCin);
+            if (clientId == -1) {
+                // Client does not exist, create a new client
+                System.out.println("------------------------------------------------");
+                System.out.println("Enter Client Name:");
+                System.out.println("------------------------------------------------");
+                String clientName = sc.nextLine();
 
-        if (clientId == -1) {
+                System.out.println("------------------------------------------------");
+                System.out.println("Enter Client phone:");
+                System.out.println("------------------------------------------------");
+                String clientPhone = sc.nextLine();
 
-            System.out.println("------------------------------------------------");
-            System.out.println("Enter Client Name:");
-            System.out.println("------------------------------------------------");
-            String clientName = sc.nextLine();
+                System.out.println("------------------------------------------------");
+                System.out.println("Enter Client email:");
+                System.out.println("------------------------------------------------");
+                String clientEmail = sc.nextLine();
 
-            System.out.println("------------------------------------------------");
-            System.out.println("Enter Client phone:");
-            System.out.println("------------------------------------------------");
-            String clientPhone = sc.nextLine();
+                clientId = ClientDAO.createClient(clientCin, clientName, clientPhone, clientEmail);
+            }
 
-            System.out.println("------------------------------------------------");
-            System.out.println("Enter Client email:");
-            System.out.println("------------------------------------------------");
-            String clientEmail = sc.nextLine();
+            BorrowDAO dao = new BorrowDAO();
+            int result = dao.borrowBook(clientId, bookIsbn);
 
-
-            clientId = ClientDAO.createClient(clientCin,clientName,clientPhone,clientEmail);
-        }
-
-        BorrowDAO dao = new BorrowDAO();
-        int result = dao.borrowBook(clientId, bookIsbn);
-
-        if (result == 1) {
-            dao.updateReserve(bookIsbn);
+            if (result == 1) {
+                dao.updateReserve(bookIsbn);
+                System.out.println("Reservation successful.");
+            } else {
+                System.out.println("Reservation failed. Please check the client CIN and book ISBN.");
+            }
         } else {
-            System.out.println("Please check the client CIN and book ISBN.");
+            System.out.println("The book with ISBN " + bookIsbn + " does not exist.");
         }
     }
-
 
 
 
@@ -309,65 +312,42 @@ public class Main {
         System.out.println("\n");
         System.out.println("\n");
         System.out.println("------------------------------------------------");
-        System.out.println("Enter Book ID:");
         System.out.println("------------------------------------------------");
-        int id = sc.nextInt();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book Title:");
-        String title = sc.nextLine();
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
-        }
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book Category:");
-        System.out.println("------------------------------------------------");
-        String category = sc.nextLine();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book edition:");
-        System.out.println("------------------------------------------------");
-        String edition = sc.nextLine();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book author id:");
-        System.out.println("------------------------------------------------");
-        int author = sc.nextInt();
-        sc.nextLine();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book Isbn:");
-        System.out.println("------------------------------------------------");
+        System.out.println("Enter Book ISBN:");
         String isbn = sc.nextLine();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book available:");
-        System.out.println("------------------------------------------------");
-        int available = sc.nextInt();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book borrowed:");
-        System.out.println("------------------------------------------------");
-        int borrowed = sc.nextInt();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book lost:");
-        System.out.println("------------------------------------------------");
-        int lost = sc.nextInt();
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book quantity:");
-        System.out.println("------------------------------------------------");
-        int quantity = sc.nextInt();
 
-        //after user enters values, store them in a Book variable
-        Book book = new Book(id,title, category,edition, author,isbn,quantity,available,borrowed,lost);
+        // Create a new Book object with the updated information
+        Book updatedBook = new Book();
 
-        var dao = new BookDAO();
+        System.out.println("Enter New Book Title:");
+        updatedBook.setTitle(sc.nextLine());
 
-        int status = dao.updateBook(book , id);
-        if(status ==1 )
-        {
-            System.out.println("Book updated successfully");
+        System.out.println("Enter New Book Category:");
+        updatedBook.setCategory(sc.nextLine());
+
+        System.out.println("Enter New Book Edition:");
+        updatedBook.setEdition(sc.nextLine());
+
+        System.out.println("Enter New Book Author ID:");
+        updatedBook.setAuthor(new Author(sc.nextInt()));
+
+        System.out.println("Enter New Book Quantity:");
+        updatedBook.setQuantity(sc.nextInt());
+
+        // Consume the newline character
+        sc.nextLine();
+
+        // Create a BookDAO object and call the updateBookByISBN method
+        BookDAO dao = new BookDAO();
+        int status = dao.updateBook(isbn, updatedBook);
+
+        if (status == 1) {
+            System.out.println("Book updated successfully.");
+        } else {
+            System.out.println("Error while updating book.");
         }
-        else
-        {
-            System.out.println("ERROR while updating Book");
-        }
-        System.out.println("\n");
+
+        sc.close();
 
     }
 
@@ -376,48 +356,8 @@ public class Main {
         System.out.println("\n");
         System.out.println("\n");
         System.out.println("\n");
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book Title:");
-        String title = sc.nextLine();
-        while (title.isEmpty()) {
-            System.out.println("Title cannot be empty. Please enter a valid title:");
-            title = sc.nextLine();
-        }
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book Category:");
-        System.out.println("------------------------------------------------");
-        String category = sc.nextLine();
-        while (category.isEmpty()) {
-            System.out.println("Category cannot be empty. Please enter a valid title:");
-            category = sc.nextLine();
-        }
 
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book edition:");
-        System.out.println("------------------------------------------------");
-        String edition = sc.nextLine();
-        while (edition.isEmpty()) {
-            System.out.println("edition cannot be empty. Please enter a valid title:");
-            edition = sc.nextLine();
-        }
 
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book author name:");
-        System.out.println("------------------------------------------------");
-
-        String authorName = sc.nextLine();
-        while (authorName.isEmpty()) {
-            System.out.println(" Author name cannot be empty. Please enter a valid title:");
-            authorName = sc.nextLine();
-        }
-
-        var dao = new AuthorDAO();
-
-        int authorId = dao.fetchAuthorId(authorName);
-
-        if (authorId == 0) {
-            System.out.println("Author not found.");
-        }
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book Isbn:");
         System.out.println("------------------------------------------------");
@@ -429,32 +369,85 @@ public class Main {
         }
 
 
-        System.out.println("------------------------------------------------");
-        System.out.println("Enter Book quantity:");
-        System.out.println("------------------------------------------------");
-        String input = sc.nextLine();
-
-        while (input.isEmpty()) {
-            System.out.println("Quantity cannot be empty. Please enter a valid quantity:");
-            input = sc.nextLine();
-        }
-
-        int quantity = Integer.parseInt(input);
-
-        Book book = new Book(title, category,edition, authorId,isbn,quantity);
-
         var daob = new BookDAO();
 
-        int status = daob.addBook(book ,authorId);
-        if(status ==1 )
-        {
-            System.out.println("Book added successfully");
+        if (daob.isBookExistsByISBN(isbn)) {
+            System.out.println("A book with ISBN " + isbn + " already exists.");
+        } else {
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Book Title:");
+            String title = sc.nextLine();
+            while (title.isEmpty()) {
+                System.out.println("Title cannot be empty. Please enter a valid title:");
+                title = sc.nextLine();
+            }
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Book Category:");
+            System.out.println("------------------------------------------------");
+            String category = sc.nextLine();
+            while (category.isEmpty()) {
+                System.out.println("Category cannot be empty. Please enter a valid title:");
+                category = sc.nextLine();
+            }
+
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Book edition:");
+            System.out.println("------------------------------------------------");
+            String edition = sc.nextLine();
+            while (edition.isEmpty()) {
+                System.out.println("edition cannot be empty. Please enter a valid title:");
+                edition = sc.nextLine();
+            }
+
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Book author name:");
+            System.out.println("------------------------------------------------");
+
+            String authorName = sc.nextLine();
+            while (authorName.isEmpty()) {
+                System.out.println(" Author name cannot be empty. Please enter a valid title:");
+                authorName = sc.nextLine();
+            }
+
+            var dao = new AuthorDAO();
+
+            int authorId = dao.fetchAuthorId(authorName);
+
+            if (authorId == 0) {
+                System.out.println("Author not found.");
+            }
+
+
+
+            System.out.println("------------------------------------------------");
+            System.out.println("Enter Book quantity:");
+            System.out.println("------------------------------------------------");
+            String input = sc.nextLine();
+
+            while (input.isEmpty()) {
+                System.out.println("Quantity cannot be empty. Please enter a valid quantity:");
+                input = sc.nextLine();
+            }
+
+            int quantity = Integer.parseInt(input);
+
+            Book book = new Book(title, category,edition, authorId,isbn,quantity);
+
+
+            int status = daob.addBook(book ,authorId);
+            if(status ==1 )
+            {
+                System.out.println("Book added successfully");
+            }
+            else
+            {
+                System.out.println("ERROR while adding Book");
+            }
+            System.out.println("\n");
+
         }
-        else
-        {
-            System.out.println("ERROR while adding Book");
-        }
-        System.out.println("\n");
+
+
     }
 
     private static void showBook() {

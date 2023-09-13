@@ -91,26 +91,40 @@ public class BookDAO {
         return success;
     }
 
-    public int updateBook(Book book ,int id) {
+    public int updateBook(String isbn, Book newBook) {
         int success = 0;
 
         try {
             Connection conn = DBC.getConnection();
-            PreparedStatement ps = conn.prepareStatement("UPDATE book SET title=?, author_id=?, edition=?, isbn=?, quantity=?, category=?, available=?, borrowed=?, lost=? WHERE id=?");
 
-            ps.setString(1, book.getTitle());
-            ps.setInt(2, book.getAuthor().getId());
-            ps.setString(3, book.getEdition());
-            ps.setString(4, book.getIsbn());
-            ps.setInt(5, book.getQuantity());
-            ps.setString(6, book.getCategory());
-            ps.setInt(7, book.getAvailable());
-            ps.setInt(8, book.getBorrow());
-            ps.setInt(9, book.getLost());
-            ps.setInt(10, book.getId()); // Assuming 'id' is the primary key of the book
+            // Check if the book with the given ISBN exists
+            String checkSql = "SELECT quantity FROM book WHERE isbn = ?";
+            PreparedStatement checkPs = conn.prepareStatement(checkSql);
+            checkPs.setString(1, isbn);
+            ResultSet resultSet = checkPs.executeQuery();
 
-            success = ps.executeUpdate();
+            if (resultSet.next()) {
+                int oldQuantity = resultSet.getInt("quantity");
 
+                // Compare the new quantity with the old quantity
+                if (newBook.getQuantity() >= oldQuantity) {
+                    String updateSql = "UPDATE book SET title=?, author_id=?, edition=?, quantity=?, category=? WHERE isbn=?";
+                    PreparedStatement ps = conn.prepareStatement(updateSql);
+
+                    ps.setString(1, newBook.getTitle());
+                    ps.setInt(2, newBook.getAuthor().getId());
+                    ps.setString(3, newBook.getEdition());
+                    ps.setInt(4, newBook.getQuantity());
+                    ps.setString(5, newBook.getCategory());
+                    ps.setString(6, isbn); // Use the old ISBN to locate the book for updating
+
+                    success = ps.executeUpdate();
+                } else {
+                    System.out.println("Entered quantity is less than the current quantity. Please enter a higher quantity.");
+                }
+            } else {
+                System.out.println("Book with ISBN " + isbn + " does not exist.");
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -262,6 +276,31 @@ public class BookDAO {
         return TotalReservations;
 
     }
+
+    public boolean isBookExistsByISBN(String isbn) {
+        boolean exists = false;
+
+        try (Connection conn = DBC.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM `book` WHERE isbn = ?")) {
+
+            ps.setString(1, isbn);
+
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                exists = count > 0;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return exists;
+    }
+
+
+
+
 
 
 
