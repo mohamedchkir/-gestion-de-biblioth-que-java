@@ -30,8 +30,10 @@ public class Main {
 
                 System.out.println(centerText("\n"));
                 System.out.println(centerText("\n"));
-                String title = "Welcome To Library Management System";
-                System.out.println(centerText(title));
+                System.out.println(centerText("-----------------------------"));
+                System.out.println(centerText("| Library Management System |"));
+                System.out.println(centerText("-----------------------------"));
+                System.out.println(centerText("\n"));
 
                 System.out.println(centerText("-----------------------------------------------"));
                 System.out.println(centerText("1. View All Books"));
@@ -87,11 +89,11 @@ public class Main {
 
 
                     case 11:
-                        System.out.println("Merciiii bcp");
+                        System.out.println("Thank uuuuuu <3");
                         scanner.close();
                         System.exit(0);
                     default:
-                        System.out.println("ta ryeeeeeeeeeee7");
+                        System.out.println("select an exist choice");
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
@@ -102,14 +104,14 @@ public class Main {
         }
 
 
-        private static String centerText(String text) {
+    private static String centerText(String text) {
             int terminalWidth = 200;
             int padding = (terminalWidth - text.length()) / 2;
             return " ".repeat(Math.max(0, padding)) + text;
         }
 
 
-        private static void clearScreen() {
+    private static void clearScreen() {
             System.out.print("\033[H\033[2J");
             System.out.flush();
         }
@@ -312,11 +314,11 @@ public class Main {
         System.out.println("\n");
         System.out.println("\n");
         System.out.println("------------------------------------------------");
-        System.out.println("------------------------------------------------");
         System.out.println("Enter Book ISBN:");
+        System.out.println("------------------------------------------------");
         String isbn = sc.nextLine();
 
-        // Create a new Book object with the updated information
+
         Book updatedBook = new Book();
 
         System.out.println("Enter New Book Title:");
@@ -328,26 +330,26 @@ public class Main {
         System.out.println("Enter New Book Edition:");
         updatedBook.setEdition(sc.nextLine());
 
-        System.out.println("Enter New Book Author ID:");
-        updatedBook.setAuthor(new Author(sc.nextInt()));
+        System.out.println("Enter Author Name:");
+        String authorName = sc.nextLine();
 
         System.out.println("Enter New Book Quantity:");
         updatedBook.setQuantity(sc.nextInt());
 
-        // Consume the newline character
+
         sc.nextLine();
 
-        // Create a BookDAO object and call the updateBookByISBN method
+
         BookDAO dao = new BookDAO();
-        int status = dao.updateBook(isbn, updatedBook);
+        int status = dao.updateBookByISBN(isbn, updatedBook, authorName);
 
         if (status == 1) {
-            System.out.println("Book updated successfully.");
+            System.out.println(centerText("Book updated successfully."));
         } else {
-            System.out.println("Error while updating book.");
+            System.out.println(centerText("Error while updating book."));
         }
 
-        sc.close();
+
 
     }
 

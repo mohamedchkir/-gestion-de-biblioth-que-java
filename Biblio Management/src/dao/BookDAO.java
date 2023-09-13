@@ -91,34 +91,47 @@ public class BookDAO {
         return success;
     }
 
-    public int updateBook(String isbn, Book newBook) {
+    public int updateBookByISBN(String isbn, Book newBook, String authorName) {
         int success = 0;
 
         try {
             Connection conn = DBC.getConnection();
 
-            // Check if the book with the given ISBN exists
-            String checkSql = "SELECT quantity FROM book WHERE isbn = ?";
-            PreparedStatement checkPs = conn.prepareStatement(checkSql);
-            checkPs.setString(1, isbn);
-            ResultSet resultSet = checkPs.executeQuery();
+
+            String fetchSql = "SELECT quantity, borrowed, lost FROM book WHERE isbn = ?";
+            PreparedStatement fetchPs = conn.prepareStatement(fetchSql);
+            fetchPs.setString(1, isbn);
+            ResultSet resultSet = fetchPs.executeQuery();
 
             if (resultSet.next()) {
+
                 int oldQuantity = resultSet.getInt("quantity");
+                int oldBorrowed = resultSet.getInt("borrowed");
+                int oldLost = resultSet.getInt("lost");
+                int newAvailable = oldQuantity - oldBorrowed - oldLost;
 
-                // Compare the new quantity with the old quantity
+
                 if (newBook.getQuantity() >= oldQuantity) {
-                    String updateSql = "UPDATE book SET title=?, author_id=?, edition=?, quantity=?, category=? WHERE isbn=?";
-                    PreparedStatement ps = conn.prepareStatement(updateSql);
 
-                    ps.setString(1, newBook.getTitle());
-                    ps.setInt(2, newBook.getAuthor().getId());
-                    ps.setString(3, newBook.getEdition());
-                    ps.setInt(4, newBook.getQuantity());
-                    ps.setString(5, newBook.getCategory());
-                    ps.setString(6, isbn); // Use the old ISBN to locate the book for updating
+                    AuthorDAO dao = new AuthorDAO();
+                    int authorId = dao.fetchAuthorId(authorName);
 
-                    success = ps.executeUpdate();
+                    if (authorId != 0) {
+                        String updateSql = "UPDATE book SET title=?, author_id=?, edition=?, quantity=?, category=?, available=? WHERE isbn=?";
+                        PreparedStatement ps = conn.prepareStatement(updateSql);
+
+                        ps.setString(1, newBook.getTitle());
+                        ps.setInt(2, authorId);
+                        ps.setString(3, newBook.getEdition());
+                        ps.setInt(4, newBook.getQuantity());
+                        ps.setString(5, newBook.getCategory());
+                        ps.setInt(6, newAvailable);
+                        ps.setString(7, isbn);
+
+                        success = ps.executeUpdate();
+                    } else {
+                        System.out.println("Author with the name " + authorName + " does not exist.");
+                    }
                 } else {
                     System.out.println("Entered quantity is less than the current quantity. Please enter a higher quantity.");
                 }
@@ -131,6 +144,7 @@ public class BookDAO {
 
         return success;
     }
+
 
     public List<Book> searchBooksByTitle(String title) {
         List<Book> matchingBooks = new ArrayList<>();
