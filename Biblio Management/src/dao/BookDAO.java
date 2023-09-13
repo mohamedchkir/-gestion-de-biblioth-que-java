@@ -73,23 +73,21 @@ public class BookDAO {
         return succes;
     }
 
-    public static int deleteBook(int id) {
+    public int deleteBookByISBN(String isbn) {
         int success = 0;
-        try
-        {
+        try {
             Connection conn = DBC.getConnection();
-            PreparedStatement ps = conn.prepareStatement("DELETE FROM book where id = ?");
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM book WHERE isbn = ?");
 
-            ps.setInt(1, id);
+            ps.setString(1, isbn);
             success = ps.executeUpdate();
 
-        }
-        catch(Exception e)
-        {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return success;
     }
+
 
     public int updateBookByISBN(String isbn, Book newBook, String authorName) {
         int success = 0;

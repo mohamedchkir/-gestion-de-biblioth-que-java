@@ -282,7 +282,6 @@ public class Main {
                 int clientId = C_dao.getClientIdByCIN(clientCin);
 
                 if (clientId == -1) {
-                    // Client does not exist, create a new client
                     System.out.println("------------------------------------------------");
                     System.out.println("Enter Client Name:");
                     System.out.println("------------------------------------------------");
@@ -506,29 +505,36 @@ public class Main {
 
     public static void deleteBook() {
         System.out.println("------------------------------------------------");
-        System.out.println("Enter Book Id:");
+        System.out.println("Enter Book ISBN:");
         System.out.println("------------------------------------------------");
-        int bookId = sc.nextInt();
+        String bookIsbn = sc.nextLine();
 
-        System.out.println("Are you sure you want to delete this book?");
-        System.out.println("1. Yes");
-        System.out.println("2. No");
-        int confirmation = sc.nextInt();
+        // Check if the book with the given ISBN exists
+        BookDAO B_dao = new BookDAO();
+        if (B_dao.isBookExistsByISBN(bookIsbn)) {
+            System.out.println("Are you sure you want to delete this book?");
+            System.out.println("1. Yes");
+            System.out.println("2. No");
+            int confirmation = sc.nextInt();
 
-        if (confirmation == 1) {
-            int status = dao.BookDAO.deleteBook(bookId);
-            if (status == 1) {
-                System.out.println("Book deleted successfully");
+            if (confirmation == 1) {
+                int status = B_dao.deleteBookByISBN(bookIsbn);
+                if (status == 1) {
+                    System.out.println("Book deleted successfully");
+                } else {
+                    System.out.println("Something went wrong");
+                }
+            } else if (confirmation == 2) {
+                System.out.println("Deletion canceled.");
             } else {
-                System.out.println("Something went wrong");
+                System.out.println("Invalid choice. Deletion canceled.");
             }
-        } else if (confirmation == 2) {
-            System.out.println("Deletion canceled.");
         } else {
-            System.out.println("Invalid choice. Deletion canceled.");
+            System.out.println("The book with ISBN " + bookIsbn + " does not exist.");
         }
 
         System.out.println("\n");
     }
+
 
 }
