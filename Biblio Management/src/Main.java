@@ -276,37 +276,42 @@ public class Main {
         // Check if the book exists
         BookDAO B_dao = new BookDAO();
         if (B_dao.isBookExistsByISBN(bookIsbn)) {
-            ClientDAO C_dao = new ClientDAO();
-            int clientId = C_dao.getClientIdByCIN(clientCin);
+            // Check if the book is available
+            if (B_dao.isBookAvailableByISBN(bookIsbn)) {
+                ClientDAO C_dao = new ClientDAO();
+                int clientId = C_dao.getClientIdByCIN(clientCin);
 
-            if (clientId == -1) {
-                // Client does not exist, create a new client
-                System.out.println("------------------------------------------------");
-                System.out.println("Enter Client Name:");
-                System.out.println("------------------------------------------------");
-                String clientName = sc.nextLine();
+                if (clientId == -1) {
+                    // Client does not exist, create a new client
+                    System.out.println("------------------------------------------------");
+                    System.out.println("Enter Client Name:");
+                    System.out.println("------------------------------------------------");
+                    String clientName = sc.nextLine();
 
-                System.out.println("------------------------------------------------");
-                System.out.println("Enter Client phone:");
-                System.out.println("------------------------------------------------");
-                String clientPhone = sc.nextLine();
+                    System.out.println("------------------------------------------------");
+                    System.out.println("Enter Client phone:");
+                    System.out.println("------------------------------------------------");
+                    String clientPhone = sc.nextLine();
 
-                System.out.println("------------------------------------------------");
-                System.out.println("Enter Client email:");
-                System.out.println("------------------------------------------------");
-                String clientEmail = sc.nextLine();
+                    System.out.println("------------------------------------------------");
+                    System.out.println("Enter Client email:");
+                    System.out.println("------------------------------------------------");
+                    String clientEmail = sc.nextLine();
 
-                clientId = ClientDAO.createClient(clientCin, clientName, clientPhone, clientEmail);
-            }
+                    clientId = ClientDAO.createClient(clientCin, clientName, clientPhone, clientEmail);
+                }
 
-            BorrowDAO dao = new BorrowDAO();
-            int result = dao.borrowBook(clientId, bookIsbn);
+                BorrowDAO dao = new BorrowDAO();
+                int result = dao.borrowBook(clientId, bookIsbn);
 
-            if (result == 1) {
-                dao.updateReserve(bookIsbn);
-                System.out.println("Reservation successful.");
+                if (result == 1) {
+                    dao.updateReserve(bookIsbn);
+                    System.out.println("Reservation successful.");
+                } else {
+                    System.out.println("Reservation failed. Please check the client CIN and book ISBN.");
+                }
             } else {
-                System.out.println("Reservation failed. Please check the client CIN and book ISBN.");
+                System.out.println("The book with ISBN " + bookIsbn + " is not available for reservation.");
             }
         } else {
             System.out.println("The book with ISBN " + bookIsbn + " does not exist.");

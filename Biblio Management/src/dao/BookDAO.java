@@ -312,12 +312,25 @@ public class BookDAO {
         return exists;
     }
 
+    public boolean isBookAvailableByISBN(String isbn) {
+        boolean isAvailable = false;
 
+        try (Connection conn = DBC.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT available FROM `book` WHERE isbn = ?")) {
 
+            ps.setString(1, isbn);
 
+            ResultSet resultSet = ps.executeQuery();
 
+            if (resultSet.next()) {
+                int available = resultSet.getInt("available");
+                isAvailable = available > 0;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
 
-
-
+        return isAvailable;
+    }
 
 }
