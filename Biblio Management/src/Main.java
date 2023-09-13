@@ -233,26 +233,31 @@ public class Main {
     private static void returnBook() {
 
         System.out.println("------------------------------------------------");
-        System.out.println("Enter Client CIN:");
+        System.out.println("Enter Client Name:");
         System.out.println("------------------------------------------------");
-        int clientId = sc.nextInt();
-        sc.nextLine();
+        String clientName = sc.nextLine();
 
         System.out.println("------------------------------------------------");
         System.out.println("Enter Book ISBN:");
         System.out.println("------------------------------------------------");
         String bookIsbn = sc.nextLine();
 
-        BorrowDAO dao = new BorrowDAO();
-        String returnedBookTitle = dao.returnReservedBook(clientId, bookIsbn);
+        ClientDAO clientDAO = new ClientDAO();
+        int clientId = clientDAO.getClientIdByName(clientName);
 
-        if (returnedBookTitle != null) {
-            dao.updateReturn(bookIsbn);
+        if (clientId != -1) {
+            BorrowDAO dao = new BorrowDAO();
+            String returnedBookTitle = dao.returnReservedBook(clientId, bookIsbn);
+
+            if (returnedBookTitle != null) {
+                dao.updateReturn(bookIsbn);
+            } else {
+                System.out.println("No reservation found for the given client and book ISBN.");
+            }
         } else {
-            System.out.println("No reservation found for the given client ID and book ISBN.");
+            System.out.println("Client with the given name not found.");
         }
 
-        sc.close();
     }
 
 

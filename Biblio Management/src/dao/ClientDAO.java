@@ -62,4 +62,25 @@ public class ClientDAO {
 
         return clientId;
     }
+
+
+    public int getClientIdByName(String clientName) {
+        int clientId = -1;
+
+        try {
+            Connection conn = DBC.getConnection();
+            String sql = "SELECT id FROM client WHERE UPPER(name) = UPPER(?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, clientName);
+            ResultSet resultSet = ps.executeQuery();
+
+            if (resultSet.next()) {
+                clientId = resultSet.getInt("id");
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+
+        return clientId;
+    }
 }
